@@ -1,0 +1,9 @@
+{
+  "appId": "xxx",
+  "clientSecret": "xxx",
+  "tenantId": "xxx",
+  "redirectUri": "xxx",
+  "loginBaseUri": "xxx",
+  "apiBaseUri": "xxx",
+  "refreshTokenKey": "testkeyfordatastorage"
+}

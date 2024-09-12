@@ -1,0 +1,28 @@
+{
+  "name": "stolfam/ms-azure-sso-php",
+  "license": "MIT",
+  "description": "Easy-to-use PHP connector for Microsoft Azure SSO authentication",
+  "version": "1.0.0",
+  "type": "library",
+  "require": {
+    "php": ">= 8.2.0",
+    "stolfam/data-storage-php": "^1.0"
+  },
+  "require-dev": {
+    "nette/tester": "^2.3"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ],
+    "files": [
+      "src/bootstrap.php"
+    ]
+  },
+  "minimum-stability": "stable",
+  "config": {
+    "platform": {
+      "php": "8.2"
+    }
+  }
+}
