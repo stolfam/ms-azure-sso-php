@@ -7,7 +7,6 @@
     use Stolfam\DataStorage\Impl\CookiesStorage;
     use Stolfam\MS\Azure\Env\AccessToken;
     use Stolfam\MS\Azure\Env\RefreshToken;
-    use Stolfam\MS\Azure\Env\UserProfile;
 
 
     class Client
