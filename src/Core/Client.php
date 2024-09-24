@@ -19,6 +19,8 @@
         protected string $redirectUri;
         protected string $refreshTokenKey;
 
+        protected int $refreshTokenRotationTime = 60; // 60 sec
+
         protected IDataStorage|null $dataStorage;
 
         /** @var callable[] */
@@ -38,7 +40,8 @@
                 'apiBaseUri',
                 'redirectUri',
                 'tenantId',
-                'refreshTokenKey'
+                'refreshTokenKey',
+                'refreshTokenRotationTime'
             ];
 
             foreach ($requiredArgs as $requiredArg) {
@@ -79,10 +82,10 @@
             }
 
             if ($refreshToken instanceof RefreshToken) {
-                if ($refreshToken->isValid()) {
+                if (!$refreshToken->shouldRotate() && $refreshToken->isValid()) {
                     return true;
                 }
-                $this->errors[] = "Refresh Token expired.";
+                $this->errors[] = "Refresh Token expired or needs to be rotated.";
             }
 
             return false;
@@ -108,7 +111,8 @@
             if ($response != null) {
                 if (!empty($response->access_token) && !empty($response->expires_on) &&
                     !empty($response->refresh_token)) {
-                    $refreshToken = new RefreshToken($response->refresh_token, (int) $response->expires_on);
+                    $refreshToken = new RefreshToken($response->refresh_token, (int) $response->expires_on,
+                        time() + $this->refreshTokenRotationTime);
                     if (!$this->persistRefreshToken($refreshToken)) {
                         $this->errors[] = "Refresh Token has not been persisted!";
                     }
@@ -131,7 +135,7 @@
                 if (!empty($response->access_token) && !empty($response->expires_on) &&
                     !empty($response->refresh_token)) {
                     $accessToken = new AccessToken($response->access_token, (int) $response->expires_on);
-                    $refreshToken = new RefreshToken($response->refresh_token, (int) $response->expires_on);
+                    $refreshToken = new RefreshToken($response->refresh_token, (int) $response->expires_on, time() + $this->refreshTokenRotationTime);
                     if (!$this->persistRefreshToken($refreshToken)) {
                         $this->errors[] = "Refresh Token has not been persisted!";
                     }
@@ -250,5 +254,10 @@
             }
 
             return null;
+        }
+
+        public function getLogoutURL(): string
+        {
+            return "$this->loginBaseUri/common/oauth2/v2.0/logout";
         }
     }

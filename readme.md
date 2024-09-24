@@ -15,6 +15,8 @@ parameters:
             clientSecret: xxx
             tenantId: xxx
             redirectUri: http://localhost
+            refreshTokenRotationTime: 60
+            refreshTokenKey: storageKey
                
 services:
     - Stolfam\MS\Azure\Client(%microsoft.azure%)
