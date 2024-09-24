@@ -10,9 +10,9 @@
      */
     class UserProfile
     {
-        public readonly string $id;
-        public readonly string $name;
-        public readonly string $email;
+        public string $id;
+        public string $name;
+        public string $email;
 
         /**
          * @param string $id
