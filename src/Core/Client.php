@@ -135,7 +135,8 @@
                 if (!empty($response->access_token) && !empty($response->expires_on) &&
                     !empty($response->refresh_token)) {
                     $accessToken = new AccessToken($response->access_token, (int) $response->expires_on);
-                    $refreshToken = new RefreshToken($response->refresh_token, (int) $response->expires_on, time() + $this->refreshTokenRotationTime);
+                    $refreshToken = new RefreshToken($response->refresh_token, (int) $response->expires_on,
+                        time() + $this->refreshTokenRotationTime);
                     if (!$this->persistRefreshToken($refreshToken)) {
                         $this->errors[] = "Refresh Token has not been persisted!";
                     }
@@ -256,8 +257,17 @@
             return null;
         }
 
-        public function getLogoutURL(): string
+        /**
+         * @param string|null $redirectUrl Raw URL (not encoded!)
+         * @return string
+         */
+        public function getLogoutURL(?string $redirectUrl = null): string
         {
-            return "$this->loginBaseUri/common/oauth2/v2.0/logout";
+            $redirect = null;
+            if (!empty($redirectUrl)) {
+                $redirect = "?post_logout_redirect_uri=" . urlencode($redirectUrl);
+            }
+
+            return "$this->loginBaseUri/common/oauth2/v2.0/logout" . $redirect;
         }
     }
