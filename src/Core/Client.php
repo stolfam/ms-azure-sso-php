@@ -6,6 +6,7 @@
     use Stolfam\DataStorage\IDataStorage;
     use Stolfam\DataStorage\Impl\CookiesStorage;
     use Stolfam\MS\Azure\Env\AccessToken;
+    use Stolfam\MS\Azure\Env\IdentityToken;
     use Stolfam\MS\Azure\Env\RefreshToken;
 
 
@@ -134,7 +135,7 @@
             if ($response != null) {
                 if (!empty($response->access_token) && !empty($response->expires_on) &&
                     !empty($response->refresh_token)) {
-                    $accessToken = new AccessToken($response->access_token, (int) $response->expires_on);
+                    $identityToken = new IdentityToken($response->id_token, (int) $response->expires_on);
                     $refreshToken = new RefreshToken($response->refresh_token, (int) $response->expires_on,
                         time() + $this->refreshTokenRotationTime);
                     if (!$this->persistRefreshToken($refreshToken)) {
@@ -142,7 +143,7 @@
                     }
 
                     foreach ($this->onAuthSuccess as $onAuthSuccess) {
-                        call_user_func($onAuthSuccess, $accessToken->getUserProfile());
+                        call_user_func($onAuthSuccess, $identityToken->getUserProfile());
                     }
 
                     return true;
