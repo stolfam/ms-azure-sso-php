@@ -10,7 +10,8 @@
             $fragments = explode(".", $this->value);
 
             if (count($fragments) >= 1) {
-                $data = json_decode(base64_decode($fragments[1]));
+                $data = json_decode(base64_decode(str_pad(strtr($fragments[1], '-_', '+/'), strlen($fragments[1]) % 4,
+                    '=', STR_PAD_RIGHT)));
 
                 $roles = [];
                 if (isset($data->roles) && is_array($data->roles)) {
