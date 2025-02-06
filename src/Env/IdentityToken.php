@@ -20,8 +20,19 @@
                     }
                 }
 
-                return new UserProfile($data->sub, ($data->given_name ?? "") . " " . ($data->family_name ?? ""),
-                    $data->email ?? $data->upn ?? "", $roles);
+                $name = "";
+                if (isset($data->name)) {
+                    $nameFragments = explode(", ", $data->name);
+                    for ($i = count($nameFragments) - 1; $i >= 0; $i--) {
+                        $name .= $nameFragments[$i] . " ";
+                    }
+                } else {
+                    $name = ($data->given_name ?? "") . " " . ($data->family_name ?? "");
+                }
+                $name = trim($name);
+
+                return new UserProfile($data->sub, $name,
+                    $data->email ?? $data->unique_name ?? $data->upn ?? $data->preferred_username ?? "", $roles);
             }
 
             return null;
